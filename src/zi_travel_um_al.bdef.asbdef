@@ -1,0 +1,42 @@
+unmanaged implementation in class zbp_i_travel_um_al unique;
+strict ( 2 );
+with draft;
+define behavior for ZI_TRAVEL_UM_AL //alias <alias_name>
+//late numbering
+lock master total etag last_changed_at //NEED TO WRITE THE CODE
+draft table ztravel_um_ald
+authorization master ( instance )
+etag master local_last_changed_at //node level managed + unmanaged
+{
+  create ( authorization : global );
+  update;
+  delete;
+  field ( numbering:managed, readonly ) travel_uuid;
+  association _Booking { create; }
+
+  draft determine action Prepare;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+
+// mapping for ztravel_um_al
+//
+// {
+//
+//
+// }
+}
+
+define behavior for ZI_BOOKING_UM_AL //alias <alias_name>
+draft table zbooling_um_ald
+//late numbering
+lock dependent by _Travel
+authorization dependent by _Travel
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) booking_uuid , parent_uuid;
+  association _Travel;
+}
